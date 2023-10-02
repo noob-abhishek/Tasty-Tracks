@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
-import '../App.css'
-
+import '../App.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse , faAddressCard , faCartPlus} from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from 'react-redux';
 
 function Header (){
 
 
-
+const cartItems = useSelector(store => store.cart.items );
   
 
     return (
@@ -14,11 +16,11 @@ function Header (){
 
 
    
-        <h1 className= "font-bold font-sans text-xl px-2 py-9">Tasty Tracks</h1>
-        <ul className='flex py-10'>
-        <li  className='px-2 font-sans'> <Link to = '/' className='home-content'>   Home </Link></li>
-        <li className='px-2 font-sans'> <Link to = '/about' className='about-content'>  About us </Link></li>
-          <li className='px-2 font-sans'><Link to = '/' className='home-content'> Cart </Link></li>
+        <h1 className= "font-bold font-sans text-xl px-2 py-4">TASTY TRACKS</h1>
+        <ul className='flex py-4'>
+        <li  className='px-12 font-sans'> <Link to = '/' className='home-content'>   <FontAwesomeIcon icon={faHouse} /> </Link></li>
+        <li className='px-8 font-sans'> <Link to = '/about' className='about-content'> <FontAwesomeIcon icon={faAddressCard} /></Link></li>
+          <li className='px-16 font-sans'><Link to = '/' className='home-content'> <FontAwesomeIcon icon={faCartPlus} />  <span className='font-sans text-xs'> {cartItems.length}</span></Link></li>
         </ul>
         
         

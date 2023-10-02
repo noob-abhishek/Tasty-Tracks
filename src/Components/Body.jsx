@@ -57,6 +57,8 @@ function Body() {
 
 
   //build your own local storage hook
+
+
   //lszy loading and chunking
 
   const isOnline = useOnline();
@@ -74,10 +76,10 @@ function Body() {
     <>
   
      
-      <div className="flex justify-center mt-[110px]">
+      <div className="flex mx-[11.2vmax] mt-[70px]">
         <input
           type="text"
-          className="p-5 m-2 rounded-md"
+          className="p-3 m-2 rounded-md"
           placeholder="Search"
           value={SearchTxt}
           onChange={(e) => {
@@ -85,7 +87,7 @@ function Body() {
           }}
         />
         <button
-          className="m-2 p-5 bg-sky-200 rounded-md hover:bg-sky-300 active:bg-sky-300"
+          className="my-2 p-3 bg-sky-200 rounded-md hover:bg-sky-300 active:bg-sky-300"
           onClick={() => {
             // user click on button searchData function is called
             searchData(SearchTxt, AllRestraunts);
@@ -102,7 +104,7 @@ function Body() {
       {AllRestraunts?.length === 0 ? (
         <Shimmer />
       ) : (
-        <div className=" flex flex-wrap justify-center p-6 mt-16 gap-4">
+        <div className=" flex flex-wrap justify-center p-6 mt-7 gap-4">
   {/* We are mapping restaurants array and passing JSON array data to RestaurantCard component as props with unique key as restaurant.data.id */}
   {FilteredRestaurants.map((restaurant) => (
     <Link
