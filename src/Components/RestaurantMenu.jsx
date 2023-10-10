@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useParams  } from 'react-router-dom'
 import { useEffect } from 'react'
 import { SwiggyMenuAPi } from '../utils/env';
+import { additem } from '../utils/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const RestaurantMenu = () => {
     const {id} = useParams();
@@ -31,7 +33,10 @@ uniqueMenuItems.push(item);
 })
 setMenuItems(uniqueMenuItems);
 }
-
+const dispatch = useDispatch();
+const handleItems =()=>{
+  dispatch(additem('grapes'))                                       //dispatch an action and pass the payload
+}
 
 return (
   <div className='restaurant-menu'>
@@ -76,7 +81,9 @@ return (
                 alt={item?.name}
               />
             )}
-            <button className='add-btn bg-blue-500 text-white px-4 py-2 rounded h-9'>
+            <button className='add-btn bg-blue-500 text-white px-4 py-2 rounded h-9' onClick={()=>{
+              handleItems()
+            }}>
               ADD +
             </button>
           </div>
