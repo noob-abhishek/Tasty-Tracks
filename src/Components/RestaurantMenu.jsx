@@ -33,9 +33,10 @@ const RestaurantMenu = () => {
     });
     setMenuItems(uniqueMenuItems);
   }
-
+// redux config-----------------------------------
   const handleItems = (item) => {
     dispatch(additem(item));
+    console.log(item)
   };
 
   return (
