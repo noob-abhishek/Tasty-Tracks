@@ -9,20 +9,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { SwiggyAPi } from "../utils/env";
 
-
 function Body() {
   const [crouseldata, setCrouseldata] = useState([]);
   const [FilteredRestaurants, setFilteredRestaurants] = useState([]);
   const [AllRestraunts, setAllRestraunts] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [SearchTxt, setSearchtxt] = useState(""); //using hooks to maintain state of a component.
+  const [SearchTxt, setSearchtxt] = useState("");
 
   async function getRestaurant() {
-    const data = await fetch(
-      SwiggyAPi
-    );
+    const data = await fetch(SwiggyAPi);
     const json = await data.json();
-    
+
     setAllRestraunts(
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
@@ -34,17 +31,18 @@ function Body() {
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
   }
+
   useEffect(() => {
     getRestaurant();
   }, [SearchTxt]);
-  // use searchData function and set condition if data is empty show error message
+
   const searchData = (searchText, restaurants) => {
     if (searchText !== "") {
       const data = filterData(searchText, restaurants);
       setFilteredRestaurants(data);
       setErrorMessage("");
       if (data.length === 0) {
-        setErrorMessage("No matches restaurant found");
+        setErrorMessage("No matching restaurants found");
       }
     } else {
       setErrorMessage("");
@@ -52,34 +50,19 @@ function Body() {
     }
   };
 
-
-
-
-
-  //build your own local storage hook
-
-
-  //lszy loading and chunking
-
   const isOnline = useOnline();
   if (!isOnline) {
     return <h1> OOPS! Check Your Internet Connection!</h1>;
   }
 
-  // if allRestaurants is empty don't render restaurants cards
-  if (!AllRestraunts) return <h1>its empty</h1>;
-
-
-
+  if (!AllRestraunts) return <h1>It's empty</h1>;
 
   return (
     <>
-  
-     
-      <div className="flex mx-[11.2vmax] mt-[70px]">
+      <div className="flex items-center justify-end mx-[11.2vmax] mt-[70px]">
         <input
           type="text"
-          className="p-3 m-2 rounded-md"
+          className="p-3 m-2 rounded-md border border-gray-300 focus:outline-none focus:border-sky-500 transition-all duration-300 focus:ring focus:ring-sky-300"
           placeholder="Search"
           value={SearchTxt}
           onChange={(e) => {
@@ -87,38 +70,36 @@ function Body() {
           }}
         />
         <button
-          className="my-2 p-3 bg-sky-200 rounded-md hover:bg-sky-300 active:bg-sky-300"
+          className="ml-2 p-3 bg-sky-200 rounded-md hover:bg-sky-300 active:bg-sky-300 focus:outline-none focus:shadow-outline-sky transition-all duration-300"
           onClick={() => {
-            // user click on button searchData function is called
             searchData(SearchTxt, AllRestraunts);
           }}
         >
-          <FontAwesomeIcon icon={faSearch} />
+          <FontAwesomeIcon icon={faSearch} className="text-white" />
         </button>
       </div>
-   
-    
-  
-      {errorMessage && <div className="error-container">{errorMessage}</div>}
+
+      {errorMessage && (
+        <div className="text-red-500 font-bold text-center mt-4">
+          {errorMessage}
+        </div>
+      )}
 
       {AllRestraunts?.length === 0 ? (
         <Shimmer />
       ) : (
-        <div className=" flex flex-wrap justify-center p-6 mt-7 gap-4">
-  {/* We are mapping restaurants array and passing JSON array data to RestaurantCard component as props with unique key as restaurant.data.id */}
-  {FilteredRestaurants.map((restaurant) => (
-    <Link
-      to={"/restaurant/" + restaurant.info.id}
-      key={restaurant.info.id}
-      className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
-    >
-      <Card  {...restaurant.info} />
-    </Link>
-  ))}
-</div>
+        <div className="flex flex-wrap justify-center p-6 mt-7 gap-4">
+          {FilteredRestaurants.map((restaurant) => (
+            <Link
+              to={"/restaurant/" + restaurant.info.id}
+              key={restaurant.info.id}
+              className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 transition-all duration-300 transform hover:scale-105"
+            >
+              <Card {...restaurant.info} />
+            </Link>
+          ))}
+        </div>
       )}
-      
-    
     </>
   );
 }

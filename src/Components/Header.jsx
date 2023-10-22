@@ -1,32 +1,37 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import '../App.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse , faAddressCard , faCartPlus} from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faAddressCard, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from 'react-redux';
 
-function Header (){
+function Header() {
+  const cartItems = useSelector(store => store.cart.items);
 
+  return (
+    <div className='flex items-center justify-between shadow-md bg-gradient-to-r from-teal-400 to-blue-500 fixed w-full top-0 z-10 px-6 py-2'>
+      <h1 className="font-bold text-white text-2xl">TASTY TRACKS</h1>
+      <ul className='flex items-center space-x-8 text-white'>
+        <li className='transition duration-300 ease-in-out transform hover:rotate-12'>
+          <Link to='/' className='hover:text-yellow-300'>
+            <FontAwesomeIcon icon={faHouse} />
+          </Link>
+        </li>
+        <li className='transition duration-300 ease-in-out transform hover:rotate-12'>
+          <Link to='/about' className='hover:text-yellow-300'>
+            <FontAwesomeIcon icon={faAddressCard} />
+          </Link>
+        </li>
+        <li className='relative transition duration-300 ease-in-out transform hover:rotate-12'>
+          <Link to='/cart' className='hover:text-yellow-300'>
+            <FontAwesomeIcon icon={faCartPlus} />
+            <span className='absolute top-0 right-0 bg-red-500 text-white rounded-full px-2 py-1 text-xs'>
+              {cartItems.length}
+            </span>
+          </Link>
+        </li>
+      </ul>
+    </div>
+  );
+}
 
-const cartItems = useSelector(store => store.cart.items );
-  
-
-    return (
-    <div className='flex justify-between shadow-md bg-sky-200 fixed w-full top-0 z-10'>
-
-
-
-   
-        <h1 className= "font-bold font-sans text-xl px-2 py-4">TASTY TRACKS</h1>
-        <ul className='flex py-4'>
-        <li  className='px-12 font-sans'> <Link to = '/' className='home-content'>   <FontAwesomeIcon icon={faHouse} /> </Link></li>
-        <li className='px-8 font-sans'> <Link to = '/about' className='about-content'> <FontAwesomeIcon icon={faAddressCard} /></Link></li>
-          <li className='px-16 font-sans'><Link to = '/' className='home-content'> <FontAwesomeIcon icon={faCartPlus} />  <span className='font-sans text-xs'> {cartItems.length}</span></Link></li>
-        </ul>
-        
-        
-
-      </div>
-    );
-  
-  }
-export default Header;  
+export default Header;

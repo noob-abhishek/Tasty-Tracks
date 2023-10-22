@@ -8,7 +8,8 @@ import Contact from './Components/Contact';
 import Body from './Components/Body';
 import RestaurantMenu from './Components/RestaurantMenu';
 import Error from './Components/Error';
-import About from './Components/Aboutus'
+import About from './Components/Aboutus';
+import Cart from './Components/Cart';
 // const About = lazy(()=> import('./Components/Aboutus'));
 
 
@@ -32,6 +33,10 @@ const router = createBrowserRouter([{
 {
   path: '/restaurant/:id',
   element: <RestaurantMenu />
+},
+{
+  path: '/cart',
+  element: <Cart />
 }
 ]
 },

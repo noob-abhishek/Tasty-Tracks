@@ -13,7 +13,7 @@ const App = ()=>{
   return (
     
     <Provider store={store}>
-    <div className="bg-sky-50">
+    <div >
   
   <Header  />
   <Outlet />
