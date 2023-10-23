@@ -1,3 +1,4 @@
+import react from 'React';
 import { useState, useEffect } from "react";
 import Card from "./Card";
 import "../App.css";
