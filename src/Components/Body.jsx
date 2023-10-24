@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import Card from './Card';
 import '../App.css';
@@ -8,23 +9,46 @@ import useOnline from '../utils/useOnline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { SwiggyAPi } from '../utils/env';
+=======
+import React from 'react';
+import { useState, useEffect } from "react";
+import Card from "./Card";
+import "../App.css";
+import Shimmer from "./shimmer";
+import { Link } from "react-router-dom";
+import { filterData } from "../utils/helper";
+import useOnline from "../utils/useOnline";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+
+>>>>>>> 3b53ef80cd9fe2d1f029a75282520d5851b5d3df
 
 function Body() {
   const [crouseldata, setCrouseldata] = useState([]);
   const [FilteredRestaurants, setFilteredRestaurants] = useState([]);
   const [AllRestraunts, setAllRestraunts] = useState([]);
+<<<<<<< HEAD
   const [errorMessage, setErrorMessage] = useState('');
   const [SearchTxt, setSearchtxt] = useState('');
 
   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
 
+=======
+  const [errorMessage, setErrorMessage] = useState("");
+  const [SearchTxt, setSearchtxt] = useState("");
+   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
+const SwiggyAPi = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
+>>>>>>> 3b53ef80cd9fe2d1f029a75282520d5851b5d3df
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
+<<<<<<< HEAD
           console.log('Latitude:', latitude, 'Longitude:', longitude);
+=======
+>>>>>>> 3b53ef80cd9fe2d1f029a75282520d5851b5d3df
         },
         (error) => {
           console.error('Error getting user location:', error.message);
@@ -34,7 +58,10 @@ function Body() {
       console.error('Geolocation is not supported by your browser.');
     }
   }, []);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3b53ef80cd9fe2d1f029a75282520d5851b5d3df
   async function getRestaurant() {
     const SwiggyAPi = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
     const data = await fetch(SwiggyAPi);
@@ -51,6 +78,8 @@ function Body() {
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
   }
+
+  
 
   useEffect(() => {
     // Only fetch restaurant data if userLocation is available
