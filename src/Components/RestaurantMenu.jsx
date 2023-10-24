@@ -11,7 +11,7 @@ const RestaurantMenu = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getRestaurantInfo(); // eslint-disable-next-line
+    getRestaurantInfo(); 
   }, []);
 
   async function getRestaurantInfo() {

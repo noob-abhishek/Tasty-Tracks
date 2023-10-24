@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 const Cart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((store) => store.cart.items);
-  const { id } =  useParams();
+  
 
 
 

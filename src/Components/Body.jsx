@@ -38,39 +38,45 @@ function Body() {
   }, []);
 
   useEffect(() => {
+    async function getRestaurant() {
+      try {
+        const SwiggyAPi = `https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
+        const data = await fetch(SwiggyAPi);
+        const json = await data.json();
+
+        if (json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants) {
+          setAllRestraunts(
+            json.data.cards[2].card.card.gridElements.infoWithStyle.restaurants
+          );
+          setFilteredRestaurants(
+            json.data.cards[2].card.card.gridElements.infoWithStyle.restaurants
+          );
+          setShowShimmer(false);
+        } else {
+          setAllRestraunts([]);
+          setFilteredRestaurants([]);
+          setErrorMessage('No restaurants available in your area.');
+        }
+      } catch (error) {
+        console.error('Error fetching restaurant data:', error);
+        setErrorMessage('Error fetching restaurant data.');
+      }
+    }
+
     // Only fetch restaurant data if userLocation is available
     if (userLocation.lat !== null && userLocation.lng !== null) {
       console.log('Fetching restaurant data with user location:', userLocation);
       getRestaurant();
+    } else {
+      setUserLocation({ lat: '31.6196089', lng: '74.8810481' });
     }
   }, [userLocation, SearchTxt]);
-
-  async function getRestaurant() {
-    const SwiggyAPi = `https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
-    const data = await fetch(SwiggyAPi);
-    const json = await data.json();
-
-    setAllRestraunts(
-      json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-    setCrouseldata(
-      json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-
-    setFilteredRestaurants(
-      json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-    setShowShimmer(false);
-  }
 
   const searchData = (searchText, restaurants) => {
     if (searchText !== '') {
       const data = filterData(searchText, restaurants);
       setFilteredRestaurants(data);
-      setErrorMessage('');
-      if (data.length === 0) {
-        setErrorMessage('No matching restaurants found');
-      }
+      setErrorMessage(data.length === 0 ? 'No matching restaurants found' : '');
     } else {
       setErrorMessage('');
       setFilteredRestaurants(AllRestraunts);
@@ -105,9 +111,7 @@ function Body() {
       </div>
 
       {errorMessage && (
-        <div className="text-red-500 font-bold text-center mt-4">
-          {errorMessage}
-        </div>
+        <div className="text-red-500 font-bold text-center mt-4">{errorMessage}</div>
       )}
 
       {showShimmer && <Shimmer />}
