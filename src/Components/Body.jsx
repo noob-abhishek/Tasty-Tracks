@@ -7,7 +7,7 @@ import { filterData } from '../utils/helper';
 import useOnline from '../utils/useOnline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { SwiggyAPi } from '../utils/env';
+
 
 function Body() {
   const [crouseldata, setCrouseldata] = useState([]);
