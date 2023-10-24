@@ -15,6 +15,7 @@ function Body() {
   const [errorMessage, setErrorMessage] = useState('');
   const [SearchTxt, setSearchtxt] = useState('');
   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
+  const [locationObtained, setLocationObtained] = useState(false);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -22,24 +23,27 @@ function Body() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
+          setLocationObtained(true);
           console.log('Latitude:', latitude, 'Longitude:', longitude);
         },
         (error) => {
           console.error('Error getting user location:', error.message);
+          setLocationObtained(false);
         }
       );
     } else {
       console.error('Geolocation is not supported by your browser.');
+      setLocationObtained(false);
     }
   }, []);
 
   useEffect(() => {
     // Only fetch restaurant data if userLocation is available
-    if (userLocation.lat !== null && userLocation.lng !== null) {
+    if (locationObtained) {
       console.log('Fetching restaurant data with user location:', userLocation);
       getRestaurant();
     }
-  }, [userLocation, SearchTxt]);
+  }, [locationObtained, userLocation, SearchTxt]);
 
   async function getRestaurant() {
     const SwiggyAPi = `https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
@@ -81,6 +85,12 @@ function Body() {
 
   return (
     <>
+      {!locationObtained && (
+        <div className="text-red-500 font-bold text-center mt-4">
+          Unable to obtain user location. Please enable location services.
+        </div>
+      )}
+
       <div className="flex items-center justify-end mx-[11.2vmax] mt-[70px]">
         <input
           type="text"
