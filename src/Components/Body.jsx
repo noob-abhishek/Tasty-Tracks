@@ -8,7 +8,7 @@ import { filterData } from "../utils/helper";
 import useOnline from "../utils/useOnline";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { SwiggyAPi } from "../utils/env";
+
 
 function Body() {
   const [crouseldata, setCrouseldata] = useState([]);
@@ -16,7 +16,23 @@ function Body() {
   const [AllRestraunts, setAllRestraunts] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [SearchTxt, setSearchtxt] = useState("");
-
+   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
+const SwiggyAPi = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+        },
+        (error) => {
+          console.error('Error getting user location:', error.message);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by your browser.');
+    }
+  }, []);
   async function getRestaurant() {
     const data = await fetch(SwiggyAPi);
     const json = await data.json();
@@ -32,6 +48,8 @@ function Body() {
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
   }
+
+  
 
   useEffect(() => {
     getRestaurant();
