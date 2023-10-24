@@ -42,7 +42,7 @@ function Body() {
   }, [userLocation, SearchTxt]);
 
   async function getRestaurant() {
-    const SwiggyAPi = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
+    const SwiggyAPi = `https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
     const data = await fetch(SwiggyAPi);
     const json = await data.json();
 
