@@ -16,6 +16,7 @@ function Body() {
   const [SearchTxt, setSearchtxt] = useState('');
   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
   const [locationError, setLocationError] = useState(null);
+  const [showShimmer, setShowShimmer] = useState(true);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -59,6 +60,7 @@ function Body() {
     setFilteredRestaurants(
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
+    setShowShimmer(false);
   }
 
   const searchData = (searchText, restaurants) => {
@@ -79,31 +81,6 @@ function Body() {
   if (!isOnline) {
     return <h1> OOPS! Check Your Internet Connection!</h1>;
   }
-
-  if (locationError) {
-    return (
-      <div>
-        <h1>Error getting user location:</h1>
-        <p>{locationError}</p>
-        {/* You can choose to display content here even if location is not available */}
-        {AllRestraunts?.length > 0 && (
-          <div className="flex flex-wrap justify-center p-6 mt-7 gap-4">
-            {FilteredRestaurants.map((restaurant) => (
-              <Link
-                to={'/restaurant/' + restaurant.info.id}
-                key={restaurant.info.id}
-                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 transition-all duration-300 transform hover:scale-105"
-              >
-                <Card {...restaurant.info} />
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  if (!AllRestraunts) return <h1>It's empty</h1>;
 
   return (
     <>
@@ -133,9 +110,9 @@ function Body() {
         </div>
       )}
 
-      {AllRestraunts?.length === 0 ? (
-        <Shimmer />
-      ) : (
+      {showShimmer && <Shimmer />}
+
+      {AllRestraunts?.length > 0 && !showShimmer && (
         <div className="flex flex-wrap justify-center p-6 mt-7 gap-4">
           {FilteredRestaurants.map((restaurant) => (
             <Link
@@ -148,6 +125,8 @@ function Body() {
           ))}
         </div>
       )}
+
+      {!showShimmer && AllRestraunts?.length === 0 && <h1>It's empty</h1>}
     </>
   );
 }
