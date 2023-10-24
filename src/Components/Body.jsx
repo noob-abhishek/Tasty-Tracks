@@ -8,14 +8,12 @@ import useOnline from '../utils/useOnline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-
 function Body() {
   const [crouseldata, setCrouseldata] = useState([]);
   const [FilteredRestaurants, setFilteredRestaurants] = useState([]);
   const [AllRestraunts, setAllRestraunts] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [SearchTxt, setSearchtxt] = useState('');
-
   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
 
   useEffect(() => {
@@ -24,7 +22,6 @@ function Body() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
-          console.log('Latitude:', latitude, 'Longitude:', longitude);
         },
         (error) => {
           console.error('Error getting user location:', error.message);
@@ -34,6 +31,18 @@ function Body() {
       console.error('Geolocation is not supported by your browser.');
     }
   }, []);
+
+  useEffect(() => {
+    console.log('Latitude:', userLocation.lat, 'Longitude:', userLocation.lng);
+  }, [userLocation]);
+
+  useEffect(() => {
+    // Only fetch restaurant data if userLocation is available
+    if (userLocation.lat !== null && userLocation.lng !== null) {
+      console.log('Fetching restaurant data with user location:', userLocation);
+      getRestaurant();
+    }
+  }, [userLocation, SearchTxt]);
 
   async function getRestaurant() {
     const SwiggyAPi = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
@@ -51,14 +60,6 @@ function Body() {
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
   }
-
-  useEffect(() => {
-    // Only fetch restaurant data if userLocation is available
-    if (userLocation.lat !== null && userLocation.lng !== null) {
-      console.log('Fetching restaurant data with user location:', userLocation);
-      getRestaurant();
-    }
-  }, [userLocation, SearchTxt]);
 
   const searchData = (searchText, restaurants) => {
     if (searchText !== '') {
