@@ -22,6 +22,7 @@ function Body() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
+          console.log('Latitude:', latitude, 'Longitude:', longitude);
         },
         (error) => {
           console.error('Error getting user location:', error.message);
@@ -31,10 +32,6 @@ function Body() {
       console.error('Geolocation is not supported by your browser.');
     }
   }, []);
-
-  useEffect(() => {
-    console.log('Latitude:', userLocation.lat, 'Longitude:', userLocation.lng);
-  }, [userLocation]);
 
   useEffect(() => {
     // Only fetch restaurant data if userLocation is available
