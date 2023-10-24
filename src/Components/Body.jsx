@@ -15,7 +15,7 @@ function Body() {
   const [errorMessage, setErrorMessage] = useState('');
   const [SearchTxt, setSearchtxt] = useState('');
   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
-  const [locationObtained, setLocationObtained] = useState(false);
+  const [locationError, setLocationError] = useState(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -23,27 +23,26 @@ function Body() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
-          setLocationObtained(true);
           console.log('Latitude:', latitude, 'Longitude:', longitude);
         },
         (error) => {
           console.error('Error getting user location:', error.message);
-          setLocationObtained(false);
+          setLocationError(error.message);
         }
       );
     } else {
       console.error('Geolocation is not supported by your browser.');
-      setLocationObtained(false);
+      setLocationError('Geolocation is not supported by your browser.');
     }
   }, []);
 
   useEffect(() => {
     // Only fetch restaurant data if userLocation is available
-    if (locationObtained) {
+    if (userLocation.lat !== null && userLocation.lng !== null) {
       console.log('Fetching restaurant data with user location:', userLocation);
       getRestaurant();
     }
-  }, [locationObtained, userLocation, SearchTxt]);
+  }, [userLocation, SearchTxt]);
 
   async function getRestaurant() {
     const SwiggyAPi = `https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
@@ -81,16 +80,33 @@ function Body() {
     return <h1> OOPS! Check Your Internet Connection!</h1>;
   }
 
+  if (locationError) {
+    return (
+      <div>
+        <h1>Error getting user location:</h1>
+        <p>{locationError}</p>
+        {/* You can choose to display content here even if location is not available */}
+        {AllRestraunts?.length > 0 && (
+          <div className="flex flex-wrap justify-center p-6 mt-7 gap-4">
+            {FilteredRestaurants.map((restaurant) => (
+              <Link
+                to={'/restaurant/' + restaurant.info.id}
+                key={restaurant.info.id}
+                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 transition-all duration-300 transform hover:scale-105"
+              >
+                <Card {...restaurant.info} />
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if (!AllRestraunts) return <h1>It's empty</h1>;
 
   return (
     <>
-      {!locationObtained && (
-        <div className="text-red-500 font-bold text-center mt-4">
-          Unable to obtain user location. Please enable location services.
-        </div>
-      )}
-
       <div className="flex items-center justify-end mx-[11.2vmax] mt-[70px]">
         <input
           type="text"
