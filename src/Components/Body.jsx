@@ -1,22 +1,42 @@
-import { useState, useEffect } from "react";
-import Card from "./Card";
-import "../App.css";
-import Shimmer from "./shimmer";
-import { Link } from "react-router-dom";
-import { filterData } from "../utils/helper";
-import useOnline from "../utils/useOnline";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { SwiggyAPi } from "../utils/env";
+import React, { useEffect, useState } from 'react';
+import Card from './Card';
+import '../App.css';
+import Shimmer from './shimmer';
+import { Link } from 'react-router-dom';
+import { filterData } from '../utils/helper';
+import useOnline from '../utils/useOnline';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { SwiggyAPi } from '../utils/env';
 
 function Body() {
   const [crouseldata, setCrouseldata] = useState([]);
   const [FilteredRestaurants, setFilteredRestaurants] = useState([]);
   const [AllRestraunts, setAllRestraunts] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [SearchTxt, setSearchtxt] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [SearchTxt, setSearchtxt] = useState('');
+
+  const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          console.log('Latitude:', latitude, 'Longitude:', longitude);
+        },
+        (error) => {
+          console.error('Error getting user location:', error.message);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by your browser.');
+    }
+  }, []);
 
   async function getRestaurant() {
+    const SwiggyAPi = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${userLocation.lat}&lng=${userLocation.lng}&is-seo-homepage-enabled=false&page_type=DESKTOP_WEB_LISTING`;
     const data = await fetch(SwiggyAPi);
     const json = await data.json();
 
@@ -33,19 +53,23 @@ function Body() {
   }
 
   useEffect(() => {
-    getRestaurant();
-  }, [SearchTxt]);
+    // Only fetch restaurant data if userLocation is available
+    if (userLocation.lat !== null && userLocation.lng !== null) {
+      console.log('Fetching restaurant data with user location:', userLocation);
+      getRestaurant();
+    }
+  }, [userLocation, SearchTxt]);
 
   const searchData = (searchText, restaurants) => {
-    if (searchText !== "") {
+    if (searchText !== '') {
       const data = filterData(searchText, restaurants);
       setFilteredRestaurants(data);
-      setErrorMessage("");
+      setErrorMessage('');
       if (data.length === 0) {
-        setErrorMessage("No matching restaurants found");
+        setErrorMessage('No matching restaurants found');
       }
     } else {
-      setErrorMessage("");
+      setErrorMessage('');
       setFilteredRestaurants(AllRestraunts);
     }
   };
@@ -91,7 +115,7 @@ function Body() {
         <div className="flex flex-wrap justify-center p-6 mt-7 gap-4">
           {FilteredRestaurants.map((restaurant) => (
             <Link
-              to={"/restaurant/" + restaurant.info.id}
+              to={'/restaurant/' + restaurant.info.id}
               key={restaurant.info.id}
               className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 transition-all duration-300 transform hover:scale-105"
             >
